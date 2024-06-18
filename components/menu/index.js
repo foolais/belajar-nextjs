@@ -1,8 +1,17 @@
+import Link from "next/link";
+
 export default function Menu() {
   return (
-    <div>
-      <a href="/">Home</a>
-      <a href="/profile">Profile</a>
-    </div>
+    <ul>
+      <li>
+        <Link href="/">Home</Link>
+      </li>
+      <li>
+        <Link href="/profile">Profile</Link>
+      </li>
+      <li>
+        <Link href="/users">Users</Link>
+      </li>
+    </ul>
   );
 }
