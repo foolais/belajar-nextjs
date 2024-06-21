@@ -1,6 +1,9 @@
-import Content from "@/components/content";
-import Layout from "@/layout";
+import Image from "next/image";
 import { useEffect } from "react";
+import dynamic from "next/dynamic";
+
+const LayoutComponent = dynamic(() => import("@/layout"));
+const Content = dynamic(() => import("@/components/content"));
 
 export default function Home() {
   useEffect(() => {
@@ -12,9 +15,15 @@ export default function Home() {
 
   return (
     <>
-      <Layout metaTitle="Home">
+      <LayoutComponent metaTitle="Home">
         <Content />
-      </Layout>
+        <Image src="/code.jpg" width={400} height={400} alt="next img" />
+        <img
+          src="/code.jpg"
+          style={{ width: 400, height: 400 }}
+          alt="next img"
+        />
+      </LayoutComponent>
     </>
   );
 }
