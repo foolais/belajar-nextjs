@@ -14,17 +14,24 @@ import {
   Spinner,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import { useQueries } from "@/hooks/usQueries";
+// import { useQueries } from "@/hooks/usQueries";
 import { useMutation } from "@/hooks/useMutation";
+import fetcher from "@/utils/fetcher";
+import useSWR from "swr";
 
 const LayoutComponent = dynamic(() => import("@/layout"));
 
 export default function Notes() {
   const router = useRouter();
-  const { data: listNotes, isLoading } = useQueries({
-    prefixUrl: "https://service.pace-unv.cloud/api/notes",
-  });
   const { mutate } = useMutation();
+  // const { data: listNotes, isLoading } = useQueries({
+  //   prefixUrl: "https://service.pace-unv.cloud/api/notes",
+  // });
+  const { data: listNotes, isLoading } = useSWR(
+    "https://service.pace-unv.cloud/api/notes",
+    fetcher,
+    { revalidateOnFocus: true }
+  );
 
   const handleDelete = async (id) => {
     try {
