@@ -1,24 +1,12 @@
-import dynamic from "next/dynamic";
-import {
-  Grid,
-  GridItem,
-  Card,
-  Heading,
-  Text,
-  Button,
-  Input,
-  Textarea,
-} from "@chakra-ui/react";
+import { Grid, GridItem, Text, Input, Textarea } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
 import { useMutation } from "@/hooks/useMutation";
+import ModalComponent from "@/components/modalComponent";
+import { useRouter } from "next/router";
 
-const LayoutComponent = dynamic(() => import("@/layout"));
-
-export default function EditNotes() {
-  const router = useRouter();
-  const { id } = router?.query;
+export default function EditNotes({ isOpen, onClose, id }) {
   const { mutate } = useMutation();
+  const router = useRouter();
   const [notes, setNotes] = useState();
 
   const handleSubmit = async () => {
@@ -30,7 +18,7 @@ export default function EditNotes() {
         payload,
       });
 
-      if (response?.success) router.push("/notes");
+      if (response?.success) router.reload();
     } catch (error) {
       console.log({ error });
     }
@@ -43,42 +31,37 @@ export default function EditNotes() {
       setNotes(listNotes?.data);
     }
 
-    fetchingData();
+    if (isOpen) fetchingData();
   }, [id]);
 
   return (
-    <>
-      <LayoutComponent metaTitle="Notes">
-        <Card margin="5" padding="5">
-          <Heading>Edit Notes</Heading>
-          <Grid gap="5">
-            <GridItem>
-              <Text>Title</Text>
-              <Input
-                type="text"
-                value={notes?.title}
-                onChange={(event) =>
-                  setNotes({ ...notes, title: event.target.value })
-                }
-              />
-            </GridItem>
-            <GridItem>
-              <Text>Description</Text>
-              <Textarea
-                value={notes?.description}
-                onChange={(event) =>
-                  setNotes({ ...notes, description: event.target.value })
-                }
-              />
-            </GridItem>
-            <GridItem>
-              <Button onClick={() => handleSubmit()} colorScheme="blue">
-                Submit
-              </Button>
-            </GridItem>
-          </Grid>
-        </Card>
-      </LayoutComponent>
-    </>
+    <ModalComponent
+      onSubmit={handleSubmit}
+      isOpen={isOpen}
+      onClose={onClose}
+      title="Edit Notes"
+    >
+      <Grid gap="5">
+        <GridItem>
+          <Text>Title</Text>
+          <Input
+            type="text"
+            value={notes?.title}
+            onChange={(event) =>
+              setNotes({ ...notes, title: event.target.value })
+            }
+          />
+        </GridItem>
+        <GridItem>
+          <Text>Description</Text>
+          <Textarea
+            value={notes?.description}
+            onChange={(event) =>
+              setNotes({ ...notes, description: event.target.value })
+            }
+          />
+        </GridItem>
+      </Grid>
+    </ModalComponent>
   );
 }
